@@ -110,134 +110,84 @@ const data = [
 
 const estadoRamos = {};
 const indexRamos = {};
+const obligatorios = data.flatMap(s => s.ramos.map(r => r.nombre)).filter(r => !["Trabajo de Titulación", "Examen de Título"].includes(r));
 
-// Lista de todos los ramos excepto Trabajo de Titulación y Examen de Título
-const ramosObligatoriosParaTitulo = data
-    .flatMap(sem => sem.ramos)
-    .filter(r => r.nombre !== "Trabajo de Titulación" && r.nombre !== "Examen de Título")
-    .map(r => r.nombre);
-
-function inicializarIndices() {
-    data.forEach(sem => {
-        sem.ramos.forEach(ramo => {
-            indexRamos[ramo.nombre] = ramo;
-            estadoRamos[ramo.nombre] = "bloqueado";
-        });
-    });
+function inicializar() {
+    data.forEach(sem => sem.ramos.forEach(r => {
+        indexRamos[r.nombre] = r;
+        estadoRamos[r.nombre] = "bloqueado";
+    }));
 }
 
 function requisitosEspeciales(nombre) {
-    if (nombre === "Trabajo de Titulación" || nombre === "Examen de Título") {
-        const pendientes = ramosObligatoriosParaTitulo.filter(r => estadoRamos[r] !== "aprobado");
-        return pendientes;
+    if (["Trabajo de Titulación", "Examen de Título"].includes(nombre)) {
+        return obligatorios.filter(r => estadoRamos[r] !== "aprobado");
     }
     return null;
 }
 
 function requisitosCumplidos(nombre) {
-    const especiales = requisitosEspeciales(nombre);
-    if (especiales !== null) {
-        return especiales.length === 0;
-    }
-    const requisitos = indexRamos[nombre].requisitos;
-    return requisitos.every(r => estadoRamos[r] === "aprobado");
+    const esp = requisitosEspeciales(nombre);
+    if (esp !== null) return esp.length === 0;
+    return indexRamos[nombre].requisitos.every(r => estadoRamos[r] === "aprobado");
 }
 
-function actualizarEstados() {
-    for (const nombre in estadoRamos) {
+function actualizar() {
+    Object.keys(estadoRamos).forEach(nombre => {
         if (estadoRamos[nombre] !== "aprobado") {
             estadoRamos[nombre] = requisitosCumplidos(nombre) ? "desbloqueado" : "bloqueado";
         }
-    }
-}
-
-function renderizarMalla() {
-    const container = document.getElementById("malla-container");
-    container.innerHTML = "";
-
-    data.forEach(sem => {
-        const divSem = document.createElement("div");
-        divSem.className = "semestre";
-
-        const titulo = document.createElement("h2");
-        titulo.textContent = sem.semestre;
-        divSem.appendChild(titulo);
-
-        sem.ramos.forEach(ramo => {
-            const divRamo = document.createElement("div");
-            divRamo.className = "ramo " + estadoRamos[ramo.nombre];
-            divRamo.textContent = ramo.nombre;
-
-            // Tooltip
-            let tooltipText = "";
-
-            const especiales = requisitosEspeciales(ramo.nombre);
-            if (especiales !== null) {
-                if (especiales.length === 0) {
-                    tooltipText = "Todos los ramos anteriores están aprobados.";
-                } else {
-                    tooltipText = "Para desbloquear, aprueba:\n" + especiales.join("\n");
-                }
-            } else if (ramo.requisitos.length === 0) {
-                tooltipText = "Sin requisitos.";
-            } else {
-                tooltipText = "Requisitos:\n" + ramo.requisitos.join("\n");
-            }
-
-            divRamo.setAttribute("data-tooltip", tooltipText);
-
-            if (estadoRamos[ramo.nombre] === "desbloqueado") {
-                divRamo.style.cursor = "pointer";
-                divRamo.addEventListener("click", () => aprobarRamo(ramo.nombre));
-            } else if (estadoRamos[ramo.nombre] === "aprobado") {
-                divRamo.style.cursor = "pointer";
-                divRamo.addEventListener("click", () => desaprobarRamo(ramo.nombre));
-            } else {
-                divRamo.style.cursor = "not-allowed";
-            }
-
-            divSem.appendChild(divRamo);
-        });
-
-        container.appendChild(divSem);
     });
 }
 
-function aprobarRamo(nombre) {
-    estadoRamos[nombre] = "aprobado";
-    guardarProgreso();
-    actualizarEstados();
-    renderizarMalla();
-}
-
-function desaprobarRamo(nombre) {
-    estadoRamos[nombre] = "bloqueado";
-    guardarProgreso();
-    actualizarEstados();
-    renderizarMalla();
-}
-
-function guardarProgreso() {
-    localStorage.setItem("estadoMalla", JSON.stringify(estadoRamos));
-}
-
-function cargarProgreso() {
-    const guardado = localStorage.getItem("estadoMalla");
-    if (guardado) {
-        const estadoGuardado = JSON.parse(guardado);
-        for (const ramo in estadoGuardado) {
-            if (estadoRamos.hasOwnProperty(ramo)) {
-                estadoRamos[ramo] = estadoGuardado[ramo];
+function render() {
+    const container = document.getElementById("malla-container");
+    container.innerHTML = "";
+    data.forEach(sem => {
+        const div = document.createElement("div");
+        div.className = "semestre";
+        div.innerHTML = `<h2>${sem.semestre}</h2>`;
+        sem.ramos.forEach(ramo => {
+            const d = document.createElement("div");
+            d.className = `ramo ${estadoRamos[ramo.nombre]}`;
+            d.textContent = ramo.nombre;
+            const reqEsp = requisitosEspeciales(ramo.nombre);
+            let tooltip = reqEsp !== null
+                ? (reqEsp.length ? "Aprobar: \n" + reqEsp.join("\n") : "Todos los demás aprobados")
+                : (ramo.requisitos.length ? "Requisitos:\n" + ramo.requisitos.join("\n") : "Sin requisitos");
+            d.setAttribute("data-tooltip", tooltip);
+            if (estadoRamos[ramo.nombre] !== "bloqueado") {
+                d.onclick = () => toggleRamo(ramo.nombre);
             }
-        }
+            div.appendChild(d);
+        });
+        container.appendChild(div);
+    });
+}
+
+function toggleRamo(nombre) {
+    estadoRamos[nombre] = estadoRamos[nombre] === "aprobado" ? "bloqueado" : "aprobado";
+    guardar();
+    actualizar();
+    render();
+}
+
+function guardar() {
+    localStorage.setItem("mallaEstado", JSON.stringify(estadoRamos));
+}
+
+function cargar() {
+    const g = JSON.parse(localStorage.getItem("mallaEstado"));
+    if (g) {
+        Object.keys(g).forEach(k => estadoRamos[k] = g[k]);
     }
 }
 
-function iniciar() {
-    inicializarIndices();
-    cargarProgreso();
-    actualizarEstados();
-    renderizarMalla();
+function main() {
+    inicializar();
+    cargar();
+    actualizar();
+    render();
 }
 
-window.onload = iniciar;
+window.onload = main;
