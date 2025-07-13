@@ -1,116 +1,69 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #fff0f6;
-  color: #4b004b;
-  margin: 20px;
-  user-select: none;
+    font-family: Arial, sans-serif;
+    background-color: #ffe4e1;
+    color: #333;
+    padding: 20px;
 }
 
 h1 {
-  text-align: center;
-  margin-bottom: 6px;
-  color: #7a2a59;
-  text-shadow: 1px 1px 2px #c56e8a;
+    text-align: center;
+    color: #c71585;
 }
 
-p {
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-weight: 600;
-  color: #9e4770;
-}
-
-/* Contenedor general: filas con columnas */
-#malla-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Cada semestre es una columna */
 .semestre {
-  background: #ffe6f0;
-  border-radius: 12px;
-  padding: 14px 18px;
-  width: 280px;
-  box-shadow: 0 0 12px #d45c82aa;
-  display: flex;
-  flex-direction: column;
+    margin-bottom: 30px;
 }
 
 .semestre h2 {
-  text-align: center;
-  margin-bottom: 14px;
-  color: #a13368;
-  border-bottom: 2px solid #a13368;
-  padding-bottom: 8px;
-  font-weight: 700;
+    color: #d87093;
+    border-bottom: 2px solid #d87093;
+    padding-bottom: 5px;
 }
 
-/* Ramo */
 .ramo {
-  padding: 12px 16px;
-  margin: 6px 0;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 0 6px transparent;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  color: white;
-  user-select: none;
-  text-align: center;
-}
-
-/* Estados */
-
-.ramo.bloqueado {
-  background-color: #c0bfc0; /* gris claro */
-  cursor: not-allowed;
-  color: #6d6d6d;
-  box-shadow: none;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s;
 }
 
 .ramo.desbloqueado {
-  background-color: #d6336c; /* rojo/rosado */
-  box-shadow: 0 0 10px #d6336ccc;
-}
-
-.ramo.desbloqueado:hover {
-  background-color: #e64980;
-  box-shadow: 0 0 14px #e64980cc;
+    background-color: #ffaeb9;
+    color: #fff;
 }
 
 .ramo.aprobado {
-  background-color: #6a0dad; /* morado */
-  box-shadow: 0 0 12px #6a0dadcc;
-  cursor: default;
-  text-decoration: line-through;
+    background-color: #ba55d3;
+    color: #fff;
 }
 
-.ramo.aprobado:hover {
-  background-color: #7d1dbf;
+.ramo.bloqueado {
+    background-color: #d3d3d3;
+    color: #999;
+    cursor: not-allowed;
 }
 
-/* Tooltip para requisitos */
-.ramo[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  background: #7a2a59cc;
-  padding: 6px 10px;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 13px;
-  white-space: nowrap;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 6px;
-  pointer-events: none;
-  z-index: 10;
-  opacity: 1;
-  transition: opacity 0.2s ease;
+/* Tooltip */
+.ramo::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    white-space: pre-line;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    font-size: 12px;
+    transition: opacity 0.3s;
+    z-index: 10;
+}
+
+.ramo:hover::after {
+    opacity: 1;
 }
