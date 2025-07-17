@@ -1,100 +1,67 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #fff0f5;
-    margin: 0;
+    color: #333;
     padding: 20px;
 }
 
 h1 {
     text-align: center;
-    color: #c71585;
-    margin-bottom: 40px;
-}
-
-#malla-container {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: min-content;
-    gap: 20px;
-    padding-bottom: 20px;
-    overflow-x: auto;
+    color: #d63384;
 }
 
 .semestre {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #ffe4ec;
-    border-radius: 10px;
-    padding: 15px;
-    min-width: 200px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 10px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
 .semestre h2 {
-    font-size: 1rem;
-    text-align: center;
-    color: #c71585;
-    margin-bottom: 10px;
+    grid-column: 1 / -1;
+    color: #d63384;
+    font-size: 1.2rem;
 }
 
 .ramo {
-    border-radius: 8px;
     padding: 10px;
+    border-radius: 5px;
     text-align: center;
-    font-size: 0.85rem;
-    width: 160px;
-    transition: all 0.3s ease;
+    font-weight: bold;
+    transition: 0.3s;
     position: relative;
-    word-wrap: break-word;
-    user-select: none;
-}
-
-.bloqueado {
-    background-color: #d3d3d3;
-    color: #666;
-}
-
-.desbloqueado {
-    background-color: #ffb6c1;
-    color: #000;
-    cursor: pointer;
-}
-
-.aprobado {
-    background-color: #dda0dd;
-    color: #fff;
-    cursor: pointer;
 }
 
 .ramo[data-tooltip]:hover::after {
     content: attr(data-tooltip);
-    white-space: pre;
     position: absolute;
-    left: 105%;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #333;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
     color: #fff;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    white-space: pre-wrap;
-    max-width: 200px;
-    z-index: 100;
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    padding: 5px 10px;
+    font-size: 12px;
+    white-space: pre-line;
+    border-radius: 5px;
+    z-index: 10;
 }
 
-.ramo[data-tooltip]:hover::before {
-    content: "";
-    position: absolute;
-    left: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-    border-left: 5px solid #333;
+.ramo.bloqueado {
+    background-color: #d3d3d3;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.ramo.desbloqueado {
+    background-color: #ffc0cb;
+    color: #333;
+    cursor: pointer;
+}
+
+.ramo.aprobado {
+    background-color: #d63384;
+    color: #fff;
+    text-decoration: line-through;
+    cursor: pointer;
 }
