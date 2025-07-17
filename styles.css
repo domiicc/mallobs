@@ -12,26 +12,42 @@ h1 {
 }
 
 #malla-container {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 20px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min-content;
     gap: 20px;
+    padding-bottom: 20px;
+    overflow-x: auto;
 }
 
 .semestre {
     display: flex;
     flex-direction: column;
-    min-width: 200px;
-    gap: 10px;
+    align-items: center;
     background-color: #ffe4ec;
     border-radius: 10px;
-    padding: 10px;
-    flex-shrink: 0;
+    padding: 15px;
+    min-width: 200px;
+    gap: 10px;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
 .semestre h2 {
     font-size: 1rem;
     text-align: center;
-    colo
+    color: #c71585;
+    margin-bottom: 10px;
+}
+
+.ramo {
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.85rem;
+    width: 160px;
+    transition: all 0.3s ease;
+    position: relative;
+    word-wrap: break-word;
+}
+
+/* ESTADOS*
