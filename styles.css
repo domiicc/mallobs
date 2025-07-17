@@ -48,6 +48,53 @@ h1 {
     transition: all 0.3s ease;
     position: relative;
     word-wrap: break-word;
+    user-select: none;
 }
 
-/* ESTADOS*
+.bloqueado {
+    background-color: #d3d3d3;
+    color: #666;
+}
+
+.desbloqueado {
+    background-color: #ffb6c1;
+    color: #000;
+    cursor: pointer;
+}
+
+.aprobado {
+    background-color: #dda0dd;
+    color: #fff;
+    cursor: pointer;
+}
+
+.ramo[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    white-space: pre;
+    position: absolute;
+    left: 105%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #333;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    max-width: 200px;
+    z-index: 100;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.ramo[data-tooltip]:hover::before {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid #333;
+}
